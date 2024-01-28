@@ -1,6 +1,6 @@
 # Azure Function to Merge Delta Tables
 
-This github repo contains the source code for this article written on [www.sidequests.blog](www.sidequests.blog)
+This github repo contains the source code for this article written on [www.sidequests.blog]([www.sidequests.blog](https://sidequests.blog/2024/01/29/merge-delta-lake-tables-with-azure-functions-delta-rs-polars/))
 
 The `function_app.py` script is an Azure Function designed to merge Delta Tables. Here's a high-level overview of its operation:
 
