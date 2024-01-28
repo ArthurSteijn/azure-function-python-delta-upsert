@@ -1,6 +1,6 @@
 # Azure Function to Merge Delta Tables
 
-This github repo contains the source code for this article written on [www.sidequests.blog]([www.sidequests.blog](https://sidequests.blog/2024/01/29/merge-delta-lake-tables-with-azure-functions-delta-rs-polars/))
+This GitHub repo contains the source code for this article written on [www.sidequests.blog](https://sidequests.blog/2024/01/29/merge-delta-lake-tables-with-azure-functions-delta-rs-polars/)
 
 The `function_app.py` script is an Azure Function designed to merge Delta Tables. Here's a high-level overview of its operation:
 
@@ -16,7 +16,7 @@ The `function_app.py` script is an Azure Function designed to merge Delta Tables
 
 6. **Parameters**: The script takes the following parameters: `sourcepath` (the path to the source CSV file), `targetpath` (the path to the target Delta Table), and `primarykeys` (the primary keys for merging the Delta Tables). These parameters can be provided either as URL parameters or in the request body.
 
-This script is designed to be deployed as an Azure Function, which means it can be triggered by various events and run on-demand. It provides a serverless way to merge Delta Tables in Azure Data Lake Storage.
+This script is designed to be deployed as an Azure Function, which means it can be triggered by various events and run on demand. It provides a serverless way to merge Delta Tables in Azure Data Lake Storage.
 
 ## Getting started
 To get started with this project follow this [Quickstart Guide for Azure Functions](https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python?pivots=python-mode-decorators)
@@ -41,8 +41,8 @@ You can provide these parameters either as URL parameters or in the request body
 ```
 
 ## Notes to self (and you?) 
-- Storage options for polars.read_csv works with full connection_string, but write_deltalake works with account_key. Would be nice if the second one would work with the connectionstring as well? (needs to be implemented in the Delta-RS rust lib?)
-- Deploying this function from a yaml pipeline with Github Actions is bugged. Currently deploying from VSCode direclty. Also see [Github issue 1262](https://github.com/Azure/azure-functions-python-worker/issues/1262) and [Github issue 1338](https://github.com/Azure/azure-functions-python-worker/issues/1338)
+- Storage options for polars.read_csv works with full connection_string, but write_deltalake works with account_key. Would be nice if the second one would work with the connection string as well? (needs to be implemented in the Delta-RS rust lib?)
+- Deploying this function from a yaml pipeline with GitHub Actions is bugged. Currently deploying from VSCode directly. Also see [Github issue 1262](https://github.com/Azure/azure-functions-python-worker/issues/1262) and [Github issue 1338](https://github.com/Azure/azure-functions-python-worker/issues/1338)
 
 
 
