@@ -4,6 +4,7 @@ import os
 from functions.custom_utils import get_param
 from deltalake import DeltaTable, write_deltalake          
 import polars as pl 
+import fsspec
 
 ADLS_CONNECTION_STRING = os.environ['ADLS_CONNECTION_STRING']
 ADLS_ACCOUNT_KEY = os.environ['ADLS_ACCOUNT_KEY']
@@ -13,8 +14,6 @@ app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 @app.function_name(name="to_delta_http_trigger")
 @app.route(route="to_delta_http_trigger")
 def todelta_http_trigger(req: func.HttpRequest) -> func.HttpResponse:
-
-
 
     logging.info('Python HTTP trigger function processed a request.')
 
@@ -36,10 +35,11 @@ def todelta_http_trigger(req: func.HttpRequest) -> func.HttpResponse:
 
     # read the source df 
     try:
-        source_df = pl.read_csv(sourcepath, has_header=True, separator="|", quote_char="", storage_options={"connection_string": ADLS_CONNECTION_STRING})
+        fs = fsspec.filesystem('abfs', connection_string=ADLS_CONNECTION_STRING)
+        with fs.open(sourcepath, 'rb') as f:
+            source_df = pl.read_csv(f, has_header=True, separator="|", quote_char='"')
+        source_pa = source_df.to_arrow()
         logging.info(f"INFO: df read successfully")
-        # set variables for source table
-        source = source_df.to_arrow()
     except Exception as e:
         msg = f"INFO: df not read successfully: {e}"
         logging.info(msg)
@@ -50,7 +50,7 @@ def todelta_http_trigger(req: func.HttpRequest) -> func.HttpResponse:
         dt = DeltaTable(targetpath, storage_options={"account_key": ADLS_ACCOUNT_KEY}) 
         logging.info(f"INFO: delta table exists")
     except:
-        write_deltalake(targetpath, source, mode="error", storage_options={"account_key": ADLS_ACCOUNT_KEY})      
+        write_deltalake(targetpath, source_pa, mode="error", storage_options={"account_key": ADLS_ACCOUNT_KEY})      
         msg = "INFO: new delta table created successfully"
         logging.info(msg)
         return  func.HttpResponse(msg, status_code=200)
@@ -58,7 +58,7 @@ def todelta_http_trigger(req: func.HttpRequest) -> func.HttpResponse:
         try:      
             result = (
                 dt.merge(
-                    source=source,
+                    source=source_pa,
                     predicate=predicate,
                     source_alias="s",
                     target_alias="t",
