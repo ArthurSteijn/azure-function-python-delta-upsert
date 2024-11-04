@@ -37,7 +37,14 @@ def todelta_http_trigger(req: func.HttpRequest) -> func.HttpResponse:
     try:
         fs = fsspec.filesystem('abfs', connection_string=ADLS_CONNECTION_STRING)
         with fs.open(sourcepath, 'rb') as f:
-            source_df = pl.read_csv(f, has_header=True, separator="|", quote_char='"')
+            source_df = pl.read_csv(
+                                    f, 
+                                    has_header=True, 
+                                    separator="|", 
+                                    quote_char='"',
+                                    infer_schema_length=10000,  # Increase schema inference length
+                                    ignore_errors=True  
+                                    )
         source_pa = source_df.to_arrow()
         logging.info(f"INFO: df read successfully")
     except Exception as e:
